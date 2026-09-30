@@ -2,7 +2,16 @@
 
 A small Windows GUI for downloading one video at a time with [yt-dlp](https://github.com/yt-dlp/yt-dlp).
 
-## Build the standalone executable
+## Download
+
+Download the latest platform-specific file from the repository's **Releases** tab:
+
+- `yt-dlp-gui.exe` for Windows;
+- `yt-dlp-gui-macos` for macOS.
+
+Both are PyInstaller packages containing Python, yt-dlp, FFmpeg, and FFprobe. Python is not installed or required on the end-user computer. macOS may require the user to explicitly allow the unsigned application in **System Settings > Privacy & Security**.
+
+## Build the Windows executable
 
 On Windows with Python 3.10 or later, run:
 
@@ -10,7 +19,7 @@ On Windows with Python 3.10 or later, run:
 .\build.ps1
 ```
 
-The script downloads build-time dependencies, the official `yt-dlp.exe`, and FFmpeg, then creates `dist\yt-dlp-gui.exe`. The produced EXE embeds yt-dlp, FFmpeg, and FFprobe; end users only need that EXE.
+The script downloads build-time dependencies, the official `yt-dlp.exe`, and FFmpeg, then creates `dist\yt-dlp-gui.exe`. Tagged GitHub Actions builds produce the Windows and macOS release files automatically.
 
 ## Privacy and disk access
 
@@ -18,9 +27,9 @@ The program accesses disk only to:
 
 - read its bundled runtime files while starting;
 - write the requested download and its temporary processing files into the folder the user selected.
-- when a network connection is available, check the official yt-dlp GitHub Release and only write a newer `yt-dlp.exe` to `%LOCALAPPDATA%\yt-dlp-gui`.
+- when a network connection is available, check the official yt-dlp GitHub Release and only write a newer engine to the OS app-data folder: `%LOCALAPPDATA%\yt-dlp-gui` on Windows or `~/Library/Application Support/yt-dlp-gui` on macOS.
 
-It does not create a settings file, download history, cache, telemetry, or background folders. The `%LOCALAPPDATA%\yt-dlp-gui` folder exists solely for the automatic yt-dlp update required to keep extractor support current.
+It does not create a settings file, download history, cache, telemetry, or background folders. The OS app-data update folder exists solely for the automatic yt-dlp update required to keep extractor support current.
 
 ## Use
 

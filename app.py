@@ -18,6 +18,10 @@ from urllib.request import Request, urlopen
 
 GITHUB_LATEST_RELEASE = "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
 PROGRESS_PATTERN = re.compile(r"PROGRESS:([0-9]+(?:\.[0-9]+)?)%")
+IS_WINDOWS = sys.platform == "win32"
+YT_DLP_ASSET_NAME = "yt-dlp.exe" if IS_WINDOWS else "yt-dlp_macos"
+ENGINE_FILE_NAME = "yt-dlp.exe" if IS_WINDOWS else "yt-dlp"
+FFMPEG_FILE_NAME = "ffmpeg.exe" if IS_WINDOWS else "ffmpeg"
 
 
 def bundle_root() -> Path:
@@ -26,22 +30,26 @@ def bundle_root() -> Path:
 
 def bundled_ffmpeg_location() -> str | None:
     bundled = bundle_root() / "ffmpeg"
-    return str(bundled) if (bundled / "ffmpeg.exe").is_file() else None
+    return str(bundled) if (bundled / FFMPEG_FILE_NAME).is_file() else None
 
 
 def bundled_yt_dlp() -> Path:
-    return bundle_root() / "yt-dlp" / "yt-dlp.exe"
+    return bundle_root() / "yt-dlp" / ENGINE_FILE_NAME
 
 
 def update_directory() -> Path:
-    local_app_data = os.environ.get("LOCALAPPDATA")
-    if not local_app_data:
-        raise OSError("The LOCALAPPDATA environment variable is unavailable.")
-    return Path(local_app_data) / "yt-dlp-gui"
+    if IS_WINDOWS:
+        local_app_data = os.environ.get("LOCALAPPDATA")
+        if not local_app_data:
+            raise OSError("The LOCALAPPDATA environment variable is unavailable.")
+        return Path(local_app_data) / "yt-dlp-gui"
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "yt-dlp-gui"
+    return Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local" / "share")) / "yt-dlp-gui"
 
 
 def current_yt_dlp() -> Path:
-    updated = update_directory() / "yt-dlp.exe"
+    updated = update_directory() / ENGINE_FILE_NAME
     return updated if updated.is_file() else bundled_yt_dlp()
 
 
@@ -293,15 +301,17 @@ class DownloaderApp:
                 self.events.put(("update_status", f"yt-dlp {installed_version} is current."))
                 return
 
-            asset = next(asset for asset in release["assets"] if asset["name"] == "yt-dlp.exe")
+            asset = next(asset for asset in release["assets"] if asset["name"] == YT_DLP_ASSET_NAME)
             target_directory = update_directory()
             target_directory.mkdir(parents=True, exist_ok=True)
-            temporary_file = target_directory / "yt-dlp.exe.download"
-            target_file = target_directory / "yt-dlp.exe"
+            temporary_file = target_directory / f"{ENGINE_FILE_NAME}.download"
+            target_file = target_directory / ENGINE_FILE_NAME
             download_request = Request(asset["browser_download_url"], headers={"User-Agent": "yt-dlp-gui"})
             with urlopen(download_request, timeout=30) as response, temporary_file.open("wb") as output:
                 while chunk := response.read(1024 * 1024):
                     output.write(chunk)
+            if not IS_WINDOWS:
+                temporary_file.chmod(0o755)
             executable_version(temporary_file)
             temporary_file.replace(target_file)
             self.events.put(("update_status", f"yt-dlp updated to {latest_version}."))
