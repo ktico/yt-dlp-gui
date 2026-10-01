@@ -23,17 +23,20 @@ curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-d
 
 This downloads the latest release to `~/Applications/yt-dlp-gui-macos` and opens it. Run the same command again any time to update.
 
-**If you already downloaded the file from the Releases page** and see the warning, either:
+**If you already downloaded the file from the Releases page** and see the warning, remove the quarantine attribute from Terminal (works on every macOS version, including Ventura/Sonoma/Sequoia, where Finder's right-click **Open** bypass no longer appears for unsigned binaries):
 
-- Right-click (or Control-click) `yt-dlp-gui-macos` in Finder, choose **Open**, then confirm **Open** in the dialog — this bypasses Gatekeeper in two clicks without visiting System Settings; or
-- Remove the quarantine attribute from Terminal:
+```sh
+xattr -cr /path/to/yt-dlp-gui-macos
+chmod +x /path/to/yt-dlp-gui-macos
+```
 
-  ```sh
-  xattr -cr /path/to/yt-dlp-gui-macos
-  chmod +x /path/to/yt-dlp-gui-macos
-  ```
+Then double-click the file again to launch it.
 
-  then double-click the file again to launch it.
+If that still doesn't work (for example because the file lives on a volume where `xattr` can't write), try the System Settings route instead:
+
+1. Double-click `yt-dlp-gui-macos`; Gatekeeper shows the warning with only **Done** / **Move to Trash**. Click **Done**.
+2. Open **System Settings > Privacy & Security**, scroll to the **Security** section, and click **Open Anyway** next to the message about `yt-dlp-gui-macos` (this option appears only after step 1's attempt, and only for a short time afterward).
+3. Confirm **Open Anyway** again in the dialog that appears, then enter your password/Touch ID if prompted.
 
 ## Build the Windows executable
 
@@ -91,17 +94,20 @@ curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-d
 
 これにより最新リリースが`~/Applications/yt-dlp-gui-macos`にダウンロードされ、自動的に起動します。更新したいときも同じコマンドを再実行するだけです。
 
-**すでにReleasesページからファイルをダウンロードして警告が出てしまった場合**は、以下のいずれかの方法で開けます。
+**すでにReleasesページからファイルをダウンロードして警告が出てしまった場合**は、ターミナルから隔離属性を削除してください（Ventura/Sonoma/Sequoiaなど、どのmacOSバージョンでも有効です。なお、Finderの右クリック→「開く」による回避は、現在のmacOSでは未署名バイナリに対して表示されなくなっています）。
 
-- Finderで`yt-dlp-gui-macos`を右クリック（またはControlキーを押しながらクリック）し、**開く** を選択、表示されるダイアログで再度 **開く** を選択する（システム設定を開かずに2クリックで回避できます）。
-- またはターミナルから隔離属性を削除する。
+```sh
+xattr -cr /path/to/yt-dlp-gui-macos
+chmod +x /path/to/yt-dlp-gui-macos
+```
 
-  ```sh
-  xattr -cr /path/to/yt-dlp-gui-macos
-  chmod +x /path/to/yt-dlp-gui-macos
-  ```
+その後、再度ファイルをダブルクリックして起動します。
 
-  その後、再度ファイルをダブルクリックして起動します。
+これでも解決しない場合（例えば`xattr`が書き込めないボリュームにファイルがある場合など）は、システム設定からの回避を試してください。
+
+1. `yt-dlp-gui-macos`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べます。**OK**をクリックします。
+2. **システム設定 > プライバシーとセキュリティ** を開き、**セキュリティ**欄までスクロールして、`yt-dlp-gui-macos`に関するメッセージの横にある **このまま開く** をクリックします（このボタンは手順1の起動試行の直後、一定時間だけ表示されます）。
+3. 表示されるダイアログで再度 **このまま開く** を選択し、必要に応じてパスワードまたはTouch IDを入力します。
 
 ## Windows用実行ファイルのビルド
 
