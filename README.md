@@ -56,3 +56,64 @@ It does not create a settings file, download history, cache, telemetry, or backg
 4. Select **Download**.
 
 Video downloads use the best available video and audio streams matching the selected limits, then merge them to MP4. Audio downloads are converted to MP3 at the selected bitrate with the embedded FFmpeg. On launch, the app checks the official yt-dlp release when online; it atomically replaces its locally cached engine only after the downloaded executable passes a version check. If the check or update fails, the embedded version remains in use.
+
+---
+
+# yt-dlp GUI（日本語）
+
+[yt-dlp](https://github.com/yt-dlp/yt-dlp) を使って一度に1本の動画をダウンロードできる、小さなWindows向けGUIです。
+
+## ダウンロード
+
+リポジトリの **Releases** タブから、お使いのプラットフォーム向けの最新ファイルをダウンロードしてください。
+
+- Windows用: `yt-dlp-gui.exe`
+- macOS用: `yt-dlp-gui-macos`
+
+どちらもPython、yt-dlp、FFmpeg、FFprobeを含むPyInstallerパッケージです。利用者のパソコンにPythonをインストールする必要はありません。
+
+### macOS:「"yt-dlp-gui-macos"にMacに損害を与えたり、プライバシーを侵害する可能性のあるマルウェアが含まれていないことを確認できませんでした」
+
+このmacOS版はApple公証（有料のApple Developerアカウントが必要）を受けていないため、初回起動時にGatekeeperがブロックします。実行するには以下の手順を行ってください。
+
+1. 一度`yt-dlp-gui-macos`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べる状態になります。
+2. **システム設定 > プライバシーとセキュリティ** を開き、**セキュリティ**欄までスクロールして、`yt-dlp-gui-macos`に関するメッセージの横にある **このまま開く** をクリックします。
+3. 表示されるダイアログで再度 **このまま開く** を選択し、必要に応じてパスワードまたはTouch IDを入力します。
+
+**このまま開く**が表示されない場合は、ターミナルから隔離属性（quarantine）を削除してください。
+
+```sh
+xattr -cr /path/to/yt-dlp-gui-macos
+chmod +x /path/to/yt-dlp-gui-macos
+```
+
+その後、再度ファイルをダブルクリックして起動します。
+
+## Windows用実行ファイルのビルド
+
+Python 3.10以降がインストールされたWindows環境で、以下を実行します。
+
+```powershell
+.\build.ps1
+```
+
+このスクリプトはビルド時の依存関係、公式の`yt-dlp.exe`、FFmpegをダウンロードし、`dist\yt-dlp-gui.exe`を生成します。タグ付きのGitHub Actionsビルドでは、Windows版とmacOS版のリリースファイルが自動的に生成されます。
+
+## プライバシーとディスクアクセス
+
+このプログラムがディスクにアクセスするのは、以下の場合のみです。
+
+- 起動時に同梱されたランタイムファイルを読み込む。
+- 利用者が選択したフォルダに、要求されたダウンロードファイルとその一時処理ファイルを書き込む。
+- ネットワーク接続が利用可能な場合、公式yt-dlpのGitHub Releaseを確認し、より新しいエンジンがある場合のみOSのアプリデータフォルダ（Windowsでは`%LOCALAPPDATA%\yt-dlp-gui`、macOSでは`~/Library/Application Support/yt-dlp-gui`）に書き込む。
+
+設定ファイル、ダウンロード履歴、キャッシュ、テレメトリ、バックグラウンドフォルダなどは一切作成しません。OSのアプリデータ更新フォルダは、エクストラクタの互換性を維持するために必要な自動yt-dlp更新専用です。
+
+## 使い方
+
+1. `http://`または`https://`で始まるURLを1つ入力します。
+2. 既存の出力先フォルダを選択します。
+3. **Video (MP4)** または **Audio (MP3)** を選び、最大解像度とビットレートを設定します。
+4. **Download** を選択します。
+
+動画ダウンロードでは、選択した制限に合う最良の映像・音声ストリームを使用し、MP4に結合します。音声ダウンロードは、内蔵FFmpegを使って選択したビットレートのMP3に変換されます。起動時にオンラインであれば公式yt-dlpリリースを確認し、ダウンロードした実行ファイルがバージョンチェックに合格した場合のみ、ローカルにキャッシュされたエンジンをアトミックに置き換えます。確認または更新に失敗した場合は、同梱版がそのまま使用されます。
