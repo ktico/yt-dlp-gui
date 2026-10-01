@@ -7,13 +7,13 @@ A small Windows GUI for downloading one video at a time with [yt-dlp](https://gi
 Download the latest platform-specific file from the repository's **Releases** tab:
 
 - `yt-dlp-gui.exe` for Windows;
-- `yt-dlp-gui-macos` for macOS.
+- `yt-dlp-gui-macos.app.zip` for macOS (unzip it to get `yt-dlp-gui-macos.app`, a regular double-clickable macOS app).
 
 Both are PyInstaller packages containing Python, yt-dlp, FFmpeg, and FFprobe. Python is not installed or required on the end-user computer.
 
 ### macOS: "Apple could not verify ... is free of malware"
 
-The macOS build is not notarized by Apple (that requires a paid Apple Developer account), so Gatekeeper blocks a file downloaded through a browser on first launch.
+The macOS build is not notarized by Apple (that requires a paid Apple Developer account), so Gatekeeper blocks the app on first launch when it was downloaded through a browser.
 
 **Recommended: one-command install (no warning at all).** Files fetched with `curl` never receive the quarantine flag that triggers the warning, so this installs and launches the app without any Gatekeeper prompt:
 
@@ -21,39 +21,23 @@ The macOS build is not notarized by Apple (that requires a paid Apple Developer 
 curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-downloader-gui/install-macos.sh | sh
 ```
 
-This downloads the latest release to `~/Applications/yt-dlp-gui-macos` and opens it. Run the same command again any time to update.
+This downloads the latest release to `~/Applications/yt-dlp-gui-macos.app` and opens it. Run the same command again any time to update.
 
-**If you already downloaded the file from the Releases page** and see the warning, remove the quarantine attribute from Terminal (works on every macOS version, including Ventura/Sonoma/Sequoia, where Finder's right-click **Open** bypass no longer appears for unsigned binaries):
+**If you already downloaded the zip from the Releases page** and see the warning after unzipping and double-clicking the app, remove the quarantine attribute from Terminal (works on every macOS version, including Ventura/Sonoma/Sequoia):
 
 ```sh
-xattr -cr /path/to/yt-dlp-gui-macos
-chmod +x /path/to/yt-dlp-gui-macos
+xattr -cr /path/to/yt-dlp-gui-macos.app
 ```
 
-Then double-click the file again to launch it.
+Then double-click the app again to launch it.
 
-If that still doesn't work (for example because the file lives on a volume where `xattr` can't write), try the System Settings route instead:
+If that still doesn't work (for example because the app lives on a volume where `xattr` can't write), try the System Settings route instead:
 
-1. Double-click `yt-dlp-gui-macos`; Gatekeeper shows the warning with only **Done** / **Move to Trash**. Click **Done**.
+1. Double-click `yt-dlp-gui-macos.app`; Gatekeeper shows the warning with only **Done** / **Move to Trash**. Click **Done**.
 2. Open **System Settings > Privacy & Security**, scroll to the **Security** section, and click **Open Anyway** next to the message about `yt-dlp-gui-macos` (this option appears only after step 1's attempt, and only for a short time afterward).
 3. Confirm **Open Anyway** again in the dialog that appears, then enter your password/Touch ID if prompted.
 
-### macOS: "The document 'yt-dlp-gui-macos' could not be opened. Text encoding 'Unicode (UTF-8)' is not applicable."
-
-This is a different problem from the Gatekeeper warning above. It means the file lost its executable permission during download (a plain browser download does not preserve it), so Finder falls back to opening the binary as a text document and fails to decode it. Fix it by making the file executable again, then clearing quarantine in the same step:
-
-```sh
-chmod +x /path/to/yt-dlp-gui-macos
-xattr -cr /path/to/yt-dlp-gui-macos
-```
-
-Then double-click the file again to launch it. If you prefer not to rely on Finder at all, launch it directly from Terminal instead, which works regardless of Finder's file-type detection:
-
-```sh
-/path/to/yt-dlp-gui-macos
-```
-
-The one-command installer above always sets the executable permission for you, so this error cannot happen when you install that way.
+Because the app is distributed as a standard macOS `.app` bundle (not a bare Unix executable), Finder always recognizes it correctly, so a previous issue where Finder tried to open the file as a UTF-8 text document no longer occurs.
 
 ### "yt-dlp update unavailable; using bundled version (... CERTIFICATE_VERIFY_FAILED ...)"
 
@@ -99,13 +83,13 @@ Video downloads use the best available video and audio streams matching the sele
 リポジトリの **Releases** タブから、お使いのプラットフォーム向けの最新ファイルをダウンロードしてください。
 
 - Windows用: `yt-dlp-gui.exe`
-- macOS用: `yt-dlp-gui-macos`
+- macOS用: `yt-dlp-gui-macos.app.zip`（展開すると、ダブルクリックで起動できる通常のmacOSアプリ`yt-dlp-gui-macos.app`になります）
 
 どちらもPython、yt-dlp、FFmpeg、FFprobeを含むPyInstallerパッケージです。利用者のパソコンにPythonをインストールする必要はありません。
 
 ### macOS:「"yt-dlp-gui-macos"にMacに損害を与えたり、プライバシーを侵害する可能性のあるマルウェアが含まれていないことを確認できませんでした」
 
-このmacOS版はApple公証（有料のApple Developerアカウントが必要）を受けていないため、ブラウザ経由でダウンロードしたファイルは初回起動時にGatekeeperがブロックします。
+このmacOS版はApple公証（有料のApple Developerアカウントが必要）を受けていないため、ブラウザ経由でダウンロードしたアプリは初回起動時にGatekeeperがブロックします。
 
 **推奨：1コマンドでのインストール（警告が一切出ません）。** `curl`でダウンロードしたファイルには、警告の原因となる隔離属性（quarantine）が付与されないため、Gatekeeperの確認なしにインストール・起動できます。ターミナルで以下を実行してください。
 
@@ -113,39 +97,23 @@ Video downloads use the best available video and audio streams matching the sele
 curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-downloader-gui/install-macos.sh | sh
 ```
 
-これにより最新リリースが`~/Applications/yt-dlp-gui-macos`にダウンロードされ、自動的に起動します。更新したいときも同じコマンドを再実行するだけです。
+これにより最新リリースが`~/Applications/yt-dlp-gui-macos.app`にインストールされ、自動的に起動します。更新したいときも同じコマンドを再実行するだけです。
 
-**すでにReleasesページからファイルをダウンロードして警告が出てしまった場合**は、ターミナルから隔離属性を削除してください（Ventura/Sonoma/Sequoiaなど、どのmacOSバージョンでも有効です。なお、Finderの右クリック→「開く」による回避は、現在のmacOSでは未署名バイナリに対して表示されなくなっています）。
+**すでにReleasesページからzipをダウンロードし、展開してアプリをダブルクリックして警告が出てしまった場合**は、ターミナルから隔離属性を削除してください（Ventura/Sonoma/Sequoiaなど、どのmacOSバージョンでも有効です）。
 
 ```sh
-xattr -cr /path/to/yt-dlp-gui-macos
-chmod +x /path/to/yt-dlp-gui-macos
+xattr -cr /path/to/yt-dlp-gui-macos.app
 ```
 
-その後、再度ファイルをダブルクリックして起動します。
+その後、再度アプリをダブルクリックして起動します。
 
-これでも解決しない場合（例えば`xattr`が書き込めないボリュームにファイルがある場合など）は、システム設定からの回避を試してください。
+これでも解決しない場合（例えば`xattr`が書き込めないボリュームにアプリがある場合など）は、システム設定からの回避を試してください。
 
-1. `yt-dlp-gui-macos`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べます。**OK**をクリックします。
+1. `yt-dlp-gui-macos.app`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べます。**OK**をクリックします。
 2. **システム設定 > プライバシーとセキュリティ** を開き、**セキュリティ**欄までスクロールして、`yt-dlp-gui-macos`に関するメッセージの横にある **このまま開く** をクリックします（このボタンは手順1の起動試行の直後、一定時間だけ表示されます）。
 3. 表示されるダイアログで再度 **このまま開く** を選択し、必要に応じてパスワードまたはTouch IDを入力します。
 
-### macOS:「書類"yt-dlp-gui-macos"を開けませんでした。テキストエンコーディング"Unicode（UTF-8）"には対応していません。」
-
-これは上記のGatekeeper警告とは別の問題です。ブラウザでのダウンロードでは実行権限が保持されないため、ファイルが実行可能ファイルとしての権限を失い、Finderがこれをテキスト文書として開こうとしてバイナリをUTF-8として解釈できず失敗しています。以下のコマンドで実行権限を復元し、同時に隔離属性も削除してください。
-
-```sh
-chmod +x /path/to/yt-dlp-gui-macos
-xattr -cr /path/to/yt-dlp-gui-macos
-```
-
-その後、再度ファイルをダブルクリックして起動します。Finderに頼りたくない場合は、ターミナルから直接起動することもできます。この方法ならFinderのファイル種別判定に関係なく動作します。
-
-```sh
-/path/to/yt-dlp-gui-macos
-```
-
-上記の1コマンドインストーラーを使った場合は、インストール時に自動的に実行権限が付与されるため、このエラーは発生しません。
+このアプリは生のUnix実行ファイルではなく、標準的なmacOSの`.app`形式で配布されているため、Finderがファイル種別を誤認してテキスト文書として開こうとする問題は発生しません。
 
 ### 「yt-dlp update unavailable; using bundled version (... CERTIFICATE_VERIFY_FAILED ...)」
 

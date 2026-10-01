@@ -44,21 +44,22 @@ jobs:
           chmod +x .build/ffmpeg/ffprobe
           curl --fail --location --output .build/yt-dlp/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos
           chmod +x .build/yt-dlp/yt-dlp
-      - name: Build macOS executable
+      - name: Build macOS app bundle
         run: |
-          python -m PyInstaller --noconfirm --clean --onefile --windowed \
+          python -m PyInstaller --noconfirm --clean --onedir --windowed \
             --name yt-dlp-gui-macos \
             --add-binary ".build/ffmpeg/ffmpeg:ffmpeg" \
             --add-binary ".build/ffmpeg/ffprobe:ffmpeg" \
             --add-binary ".build/yt-dlp/yt-dlp:yt-dlp" \
             app.py
-          chmod +x dist/yt-dlp-gui-macos
       - name: Ad-hoc code sign
-        run: codesign --force --deep --sign - dist/yt-dlp-gui-macos
+        run: codesign --force --deep --sign - "dist/yt-dlp-gui-macos.app"
+      - name: Zip app bundle
+        run: ditto -c -k --sequesterRsrc --keepParent "dist/yt-dlp-gui-macos.app" dist/yt-dlp-gui-macos.app.zip
       - uses: actions/upload-artifact@v4
         with:
           name: macos
-          path: dist/yt-dlp-gui-macos
+          path: dist/yt-dlp-gui-macos.app.zip
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -73,4 +74,4 @@ jobs:
         with:
           files: |
             release/yt-dlp-gui.exe
-            release/yt-dlp-gui-macos
+            release/yt-dlp-gui-macos.app.zip

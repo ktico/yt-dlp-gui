@@ -114,3 +114,7 @@ unable to get local issuer certificate (_ssl.c:1010)>).
 ## 元バイナリへの変更範囲
 
 検証中に`~/Downloads/yt-dlp-gui-macos`へ行った変更は実行権限の付与のみ。内容・ソース・隔離属性は変更しておらず、検証前後でSHA-256が一致することを確認済み。
+
+## 追記（v0.3.1）: 配布形式を`.app`バンドルに変更
+
+本検証はv0.2.0の「生のUnix実行ファイル」（`yt-dlp-gui-macos`）を対象に実施したものですが、この形式はFinderでの実行権限ロストやUTF-8誤認エラーの原因でもありました。Codexによる動作確認用の`.app`ラップ版（`yt-dlp Verification.app`）が問題なく動作することが確認できたため、v0.3.1よりリリース形式を標準的なmacOS `.app`バンドル（`yt-dlp-gui-macos.app.zip`として配布）に変更しました。ビルドは`PyInstaller --onedir --windowed`で生成される`.app`をad-hoc署名し、`ditto`でzip化しています。ローカルビルドで署名検証・起動を確認済みです。
