@@ -38,6 +38,23 @@ If that still doesn't work (for example because the file lives on a volume where
 2. Open **System Settings > Privacy & Security**, scroll to the **Security** section, and click **Open Anyway** next to the message about `yt-dlp-gui-macos` (this option appears only after step 1's attempt, and only for a short time afterward).
 3. Confirm **Open Anyway** again in the dialog that appears, then enter your password/Touch ID if prompted.
 
+### macOS: "The document 'yt-dlp-gui-macos' could not be opened. Text encoding 'Unicode (UTF-8)' is not applicable."
+
+This is a different problem from the Gatekeeper warning above. It means the file lost its executable permission during download (a plain browser download does not preserve it), so Finder falls back to opening the binary as a text document and fails to decode it. Fix it by making the file executable again, then clearing quarantine in the same step:
+
+```sh
+chmod +x /path/to/yt-dlp-gui-macos
+xattr -cr /path/to/yt-dlp-gui-macos
+```
+
+Then double-click the file again to launch it. If you prefer not to rely on Finder at all, launch it directly from Terminal instead, which works regardless of Finder's file-type detection:
+
+```sh
+/path/to/yt-dlp-gui-macos
+```
+
+The one-command installer above always sets the executable permission for you, so this error cannot happen when you install that way.
+
 ## Build the Windows executable
 
 On Windows with Python 3.10 or later, run:
@@ -108,6 +125,23 @@ chmod +x /path/to/yt-dlp-gui-macos
 1. `yt-dlp-gui-macos`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べます。**OK**をクリックします。
 2. **システム設定 > プライバシーとセキュリティ** を開き、**セキュリティ**欄までスクロールして、`yt-dlp-gui-macos`に関するメッセージの横にある **このまま開く** をクリックします（このボタンは手順1の起動試行の直後、一定時間だけ表示されます）。
 3. 表示されるダイアログで再度 **このまま開く** を選択し、必要に応じてパスワードまたはTouch IDを入力します。
+
+### macOS:「書類"yt-dlp-gui-macos"を開けませんでした。テキストエンコーディング"Unicode（UTF-8）"には対応していません。」
+
+これは上記のGatekeeper警告とは別の問題です。ブラウザでのダウンロードでは実行権限が保持されないため、ファイルが実行可能ファイルとしての権限を失い、Finderがこれをテキスト文書として開こうとしてバイナリをUTF-8として解釈できず失敗しています。以下のコマンドで実行権限を復元し、同時に隔離属性も削除してください。
+
+```sh
+chmod +x /path/to/yt-dlp-gui-macos
+xattr -cr /path/to/yt-dlp-gui-macos
+```
+
+その後、再度ファイルをダブルクリックして起動します。Finderに頼りたくない場合は、ターミナルから直接起動することもできます。この方法ならFinderのファイル種別判定に関係なく動作します。
+
+```sh
+/path/to/yt-dlp-gui-macos
+```
+
+上記の1コマンドインストーラーを使った場合は、インストール時に自動的に実行権限が付与されるため、このエラーは発生しません。
 
 ## Windows用実行ファイルのビルド
 
