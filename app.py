@@ -113,7 +113,7 @@ class DownloaderApp:
         self.type_picker = ttk.Combobox(
             root,
             textvariable=self.download_type,
-            values=("Video (MP4)", "Audio (MP3)"),
+            values=("Video (MP4)", "Video (MOV)", "Audio (MP3)", "Audio (WAV)"),
             state="readonly",
             width=18,
         )
@@ -149,7 +149,15 @@ class DownloaderApp:
         threading.Thread(target=self.update_yt_dlp, daemon=True).start()
 
     def update_quality_options(self, _event: Any = None) -> None:
-        if self.download_type.get() == "Audio (MP3)":
+        if self.download_type.get() == "Audio (WAV)":
+            self.quality_label.configure(text="Source quality")
+            self.quality_picker.configure(values=("Best available",), state="disabled")
+            self.resolution.set("Best available")
+            self.bitrate_label.configure(text="Audio quality")
+            self.bitrate_picker.configure(values=("Lossless",), state="disabled")
+            self.bitrate.set("Lossless")
+            self.bitrate_suffix.configure(text="")
+        elif self.download_type.get() == "Audio (MP3)":
             self.quality_label.configure(text="Source quality")
             self.quality_picker.configure(values=("Best available",), state="disabled")
             self.resolution.set("Best available")
@@ -229,18 +237,18 @@ class DownloaderApp:
             "--progress-template",
             "download:PROGRESS:%(progress._percent_str)s",
         ]
-        if self.download_type.get() == "Audio (MP3)":
+        if self.download_type.get() in ("Audio (MP3)", "Audio (WAV)"):
             command.extend(
                 [
                     "--format",
                     "bestaudio/best",
                     "--extract-audio",
                     "--audio-format",
-                    "mp3",
-                    "--audio-quality",
-                    self.bitrate.get(),
+                    "wav" if self.download_type.get() == "Audio (WAV)" else "mp3",
                 ]
             )
+            if self.download_type.get() == "Audio (MP3)":
+                command.extend(["--audio-quality", self.bitrate.get()])
         else:
             constraints = ""
             if self.resolution.get() != "Best available":
@@ -252,7 +260,7 @@ class DownloaderApp:
                     "--format",
                     f"bestvideo{constraints}+bestaudio/best{constraints}",
                     "--merge-output-format",
-                    "mp4",
+                    "mov" if self.download_type.get() == "Video (MOV)" else "mp4",
                 ]
             )
         command.append(url)

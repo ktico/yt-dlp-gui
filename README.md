@@ -67,10 +67,10 @@ It does not create a settings file, download history, cache, telemetry, or backg
 
 1. Enter one `http://` or `https://` URL.
 2. Select an existing output folder.
-3. Choose **Video (MP4)** or **Audio (MP3)**, then select its maximum resolution and bitrate.
+3. Choose **Video (MP4)**, **Video (MOV)**, **Audio (MP3)**, or **Audio (WAV)**, then select its maximum resolution/bitrate (WAV is lossless, so no bitrate applies).
 4. Select **Download**.
 
-Video downloads use the best available video and audio streams matching the selected limits, then merge them to MP4. Audio downloads are converted to MP3 at the selected bitrate with the embedded FFmpeg. On launch, the app checks the official yt-dlp release when online; it atomically replaces its locally cached engine only after the downloaded executable passes a version check. If the check or update fails, the embedded version remains in use.
+Video downloads use the best available video and audio streams matching the selected limits, then merge them to MP4 or MOV. Audio downloads are converted with the embedded FFmpeg to MP3 at the selected bitrate, or to lossless WAV. On launch, the app checks the official yt-dlp release when online; it atomically replaces its locally cached engine only after the downloaded executable passes a version check. If the check or update fails, the embedded version remains in use.
 
 ---
 
@@ -143,7 +143,7 @@ Python 3.10以降がインストールされたWindows環境で、以下を実�
 
 1. `http://`または`https://`で始まるURLを1つ入力します。
 2. 既存の出力先フォルダを選択します。
-3. **Video (MP4)** または **Audio (MP3)** を選び、最大解像度とビットレートを設定します。
+3. **Video (MP4)**、**Video (MOV)**、**Audio (MP3)**、**Audio (WAV)** のいずれかを選び、最大解像度・ビットレートを設定します（WAVは無劣化形式のためビットレート設定はありません）。
 4. **Download** を選択します。
 
-動画ダウンロードでは、選択した制限に合う最良の映像・音声ストリームを使用し、MP4に結合します。音声ダウンロードは、内蔵FFmpegを使って選択したビットレートのMP3に変換されます。起動時にオンラインであれば公式yt-dlpリリースを確認し、ダウンロードした実行ファイルがバージョンチェックに合格した場合のみ、ローカルにキャッシュされたエンジンをアトミックに置き換えます。確認または更新に失敗した場合は、同梱版がそのまま使用されます。
+動画ダウンロードでは、選択した制限に合う最良の映像・音声ストリームを使用し、MP4またはMOVに結合します。音声ダウンロードは、内蔵FFmpegを使って選択したビットレートのMP3、または無劣化のWAVに変換されます。起動時にオンラインであれば公式yt-dlpリリースを確認し、ダウンロードした実行ファイルがバージョンチェックに合格した場合のみ、ローカルにキャッシュされたエンジンをアトミックに置き換えます。確認または更新に失敗した場合は、同梱版がそのまま使用されます。
