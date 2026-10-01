@@ -9,7 +9,24 @@ Download the latest platform-specific file from the repository's **Releases** ta
 - `yt-dlp-gui.exe` for Windows;
 - `yt-dlp-gui-macos` for macOS.
 
-Both are PyInstaller packages containing Python, yt-dlp, FFmpeg, and FFprobe. Python is not installed or required on the end-user computer. macOS may require the user to explicitly allow the unsigned application in **System Settings > Privacy & Security**.
+Both are PyInstaller packages containing Python, yt-dlp, FFmpeg, and FFprobe. Python is not installed or required on the end-user computer.
+
+### macOS: "Apple could not verify ... is free of malware"
+
+The macOS build is not notarized by Apple (that requires a paid Apple Developer account), so Gatekeeper blocks it on first launch. To run it anyway:
+
+1. Try double-clicking `yt-dlp-gui-macos` once; Gatekeeper will show the warning and offer only **Done** / **Move to Trash**.
+2. Open **System Settings > Privacy & Security**, scroll to the **Security** section, and click **Open Anyway** next to the message about `yt-dlp-gui-macos`.
+3. Confirm **Open Anyway** again in the dialog that appears, then enter your password/Touch ID if prompted.
+
+If **Open Anyway** is not shown, remove the quarantine attribute from Terminal instead:
+
+```sh
+xattr -cr /path/to/yt-dlp-gui-macos
+chmod +x /path/to/yt-dlp-gui-macos
+```
+
+Then double-click the file again to launch it.
 
 ## Build the Windows executable
 
