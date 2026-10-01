@@ -55,6 +55,10 @@ Then double-click the file again to launch it. If you prefer not to rely on Find
 
 The one-command installer above always sets the executable permission for you, so this error cannot happen when you install that way.
 
+### "yt-dlp update unavailable; using bundled version (... CERTIFICATE_VERIFY_FAILED ...)"
+
+This message on the status line is informational, not an error: the app could not verify Apple's/GitHub's TLS certificate while checking for a newer yt-dlp, so it kept using the engine bundled inside the app instead. Downloads still work normally with the bundled engine. Versions built from this repository after the fix bundle their own CA certificate store ([certifi](https://github.com/certifi/python-certifi)) so this should no longer occur; if you still see it, re-download the latest release.
+
 ## Build the Windows executable
 
 On Windows with Python 3.10 or later, run:
@@ -142,6 +146,10 @@ xattr -cr /path/to/yt-dlp-gui-macos
 ```
 
 上記の1コマンドインストーラーを使った場合は、インストール時に自動的に実行権限が付与されるため、このエラーは発生しません。
+
+### 「yt-dlp update unavailable; using bundled version (... CERTIFICATE_VERIFY_FAILED ...)」
+
+このステータス表示はエラーではなく情報メッセージです。新しいyt-dlpの確認時にApple/GitHubのTLS証明書を検証できなかったため、アプリに同梱されたエンジンをそのまま使用したことを示しています。同梱エンジンでもダウンロード自体は通常どおり動作します。この修正以降にビルドされたバージョンは、証明書ストア（[certifi](https://github.com/certifi/python-certifi)）を自身に同梱するため、本来このメッセージは表示されなくなります。表示される場合は、最新リリースを再ダウンロードしてください。
 
 ## Windows用実行ファイルのビルド
 

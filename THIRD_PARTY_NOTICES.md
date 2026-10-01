@@ -6,3 +6,5 @@ This application bundles the following separately licensed executables:
 - [FFmpeg](https://ffmpeg.org/), distributed under the [GNU GPL version 3 or later](https://www.gnu.org/licenses/gpl-3.0.html). Corresponding source code is available from the [FFmpeg source repository](https://github.com/FFmpeg/FFmpeg).
 
 The Windows build downloads the FFmpeg Essentials build from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/). The macOS release workflow obtains static FFmpeg and FFprobe builds through the `ffmpeg-static` and `@ffprobe-installer/ffprobe` packages. Refer to each upstream project for the exact build configuration and notices.
+
+This application also bundles the [certifi](https://github.com/certifi/python-certifi) CA certificate bundle, distributed under the [Mozilla Public License 2.0](https://github.com/certifi/python-certifi/blob/master/LICENSE), used to validate TLS certificates for the HTTPS requests the app makes to check for yt-dlp updates.

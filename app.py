@@ -6,6 +6,7 @@ import json
 import os
 import queue
 import re
+import ssl
 import subprocess
 import sys
 import threading
@@ -16,12 +17,21 @@ from typing import Any
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
+import certifi
+
 GITHUB_LATEST_RELEASE = "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest"
 PROGRESS_PATTERN = re.compile(r"PROGRESS:([0-9]+(?:\.[0-9]+)?)%")
 IS_WINDOWS = sys.platform == "win32"
 YT_DLP_ASSET_NAME = "yt-dlp.exe" if IS_WINDOWS else "yt-dlp_macos"
 ENGINE_FILE_NAME = "yt-dlp.exe" if IS_WINDOWS else "yt-dlp"
 FFMPEG_FILE_NAME = "ffmpeg.exe" if IS_WINDOWS else "ffmpeg"
+
+# PyInstaller's frozen Python cannot see the OS certificate store (and there
+# is no "Install Certificates.command" step for a bundled app), so without an
+# explicit CA bundle every HTTPS request fails with CERTIFICATE_VERIFY_FAILED.
+# certifi ships a CA bundle as package data that PyInstaller bundles
+# automatically, so point every request at it explicitly.
+SSL_CONTEXT = ssl.create_default_context(cafile=certifi.where())
 
 
 def bundle_root() -> Path:
@@ -293,7 +303,7 @@ class DownloaderApp:
                     "User-Agent": "yt-dlp-gui",
                 },
             )
-            with urlopen(request, timeout=5) as response:
+            with urlopen(request, timeout=5, context=SSL_CONTEXT) as response:
                 release = json.load(response)
             latest_version = str(release["tag_name"])
             installed_version = executable_version(current_yt_dlp())
@@ -307,7 +317,10 @@ class DownloaderApp:
             temporary_file = target_directory / f"{ENGINE_FILE_NAME}.download"
             target_file = target_directory / ENGINE_FILE_NAME
             download_request = Request(asset["browser_download_url"], headers={"User-Agent": "yt-dlp-gui"})
-            with urlopen(download_request, timeout=30) as response, temporary_file.open("wb") as output:
+            with (
+                urlopen(download_request, timeout=30, context=SSL_CONTEXT) as response,
+                temporary_file.open("wb") as output,
+            ):
                 while chunk := response.read(1024 * 1024):
                     output.write(chunk)
             if not IS_WINDOWS:
