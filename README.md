@@ -13,20 +13,27 @@ Both are PyInstaller packages containing Python, yt-dlp, FFmpeg, and FFprobe. Py
 
 ### macOS: "Apple could not verify ... is free of malware"
 
-The macOS build is not notarized by Apple (that requires a paid Apple Developer account), so Gatekeeper blocks it on first launch. To run it anyway:
+The macOS build is not notarized by Apple (that requires a paid Apple Developer account), so Gatekeeper blocks a file downloaded through a browser on first launch.
 
-1. Try double-clicking `yt-dlp-gui-macos` once; Gatekeeper will show the warning and offer only **Done** / **Move to Trash**.
-2. Open **System Settings > Privacy & Security**, scroll to the **Security** section, and click **Open Anyway** next to the message about `yt-dlp-gui-macos`.
-3. Confirm **Open Anyway** again in the dialog that appears, then enter your password/Touch ID if prompted.
-
-If **Open Anyway** is not shown, remove the quarantine attribute from Terminal instead:
+**Recommended: one-command install (no warning at all).** Files fetched with `curl` never receive the quarantine flag that triggers the warning, so this installs and launches the app without any Gatekeeper prompt:
 
 ```sh
-xattr -cr /path/to/yt-dlp-gui-macos
-chmod +x /path/to/yt-dlp-gui-macos
+curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-downloader-gui/install-macos.sh | sh
 ```
 
-Then double-click the file again to launch it.
+This downloads the latest release to `~/Applications/yt-dlp-gui-macos` and opens it. Run the same command again any time to update.
+
+**If you already downloaded the file from the Releases page** and see the warning, either:
+
+- Right-click (or Control-click) `yt-dlp-gui-macos` in Finder, choose **Open**, then confirm **Open** in the dialog — this bypasses Gatekeeper in two clicks without visiting System Settings; or
+- Remove the quarantine attribute from Terminal:
+
+  ```sh
+  xattr -cr /path/to/yt-dlp-gui-macos
+  chmod +x /path/to/yt-dlp-gui-macos
+  ```
+
+  then double-click the file again to launch it.
 
 ## Build the Windows executable
 
@@ -74,20 +81,27 @@ Video downloads use the best available video and audio streams matching the sele
 
 ### macOS:「"yt-dlp-gui-macos"にMacに損害を与えたり、プライバシーを侵害する可能性のあるマルウェアが含まれていないことを確認できませんでした」
 
-このmacOS版はApple公証（有料のApple Developerアカウントが必要）を受けていないため、初回起動時にGatekeeperがブロックします。実行するには以下の手順を行ってください。
+このmacOS版はApple公証（有料のApple Developerアカウントが必要）を受けていないため、ブラウザ経由でダウンロードしたファイルは初回起動時にGatekeeperがブロックします。
 
-1. 一度`yt-dlp-gui-macos`をダブルクリックします。Gatekeeperの警告が表示され、**OK**（または**ゴミ箱に入れる**）のみが選べる状態になります。
-2. **システム設定 > プライバシーとセキュリティ** を開き、**セキュリティ**欄までスクロールして、`yt-dlp-gui-macos`に関するメッセージの横にある **このまま開く** をクリックします。
-3. 表示されるダイアログで再度 **このまま開く** を選択し、必要に応じてパスワードまたはTouch IDを入力します。
-
-**このまま開く**が表示されない場合は、ターミナルから隔離属性（quarantine）を削除してください。
+**推奨：1コマンドでのインストール（警告が一切出ません）。** `curl`でダウンロードしたファイルには、警告の原因となる隔離属性（quarantine）が付与されないため、Gatekeeperの確認なしにインストール・起動できます。ターミナルで以下を実行してください。
 
 ```sh
-xattr -cr /path/to/yt-dlp-gui-macos
-chmod +x /path/to/yt-dlp-gui-macos
+curl -fsSL https://raw.githubusercontent.com/ktico/yt-dlp-gui/ktico-standalone-downloader-gui/install-macos.sh | sh
 ```
 
-その後、再度ファイルをダブルクリックして起動します。
+これにより最新リリースが`~/Applications/yt-dlp-gui-macos`にダウンロードされ、自動的に起動します。更新したいときも同じコマンドを再実行するだけです。
+
+**すでにReleasesページからファイルをダウンロードして警告が出てしまった場合**は、以下のいずれかの方法で開けます。
+
+- Finderで`yt-dlp-gui-macos`を右クリック（またはControlキーを押しながらクリック）し、**開く** を選択、表示されるダイアログで再度 **開く** を選択する（システム設定を開かずに2クリックで回避できます）。
+- またはターミナルから隔離属性を削除する。
+
+  ```sh
+  xattr -cr /path/to/yt-dlp-gui-macos
+  chmod +x /path/to/yt-dlp-gui-macos
+  ```
+
+  その後、再度ファイルをダブルクリックして起動します。
 
 ## Windows用実行ファイルのビルド
 
